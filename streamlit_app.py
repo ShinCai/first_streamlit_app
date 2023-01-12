@@ -63,7 +63,7 @@ if streamlit.button('Get Fruit Load List'):
 # steamlit.stop()
 
 def append_fruit_load_list(new_fruit):
-    insertion_sql = f'insert into fruit_load_list values ('{new_fruit}')'
+    insertion_sql = f"insert into fruit_load_list values ('{new_fruit}')"
     with snowflake.connector.connect(**streamlit.secrets["snowflake"]) as cnx:
         with cnx.cursor() as cur:
             cur.execute(insertion_sql)
