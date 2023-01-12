@@ -2,6 +2,7 @@ import streamlit
 import pandas
 import requests
 import snowflake.connector
+# import contextlib
 from urllib.error import URLError
 
 streamlit.title('My Parents New Healthy Diner')
@@ -44,15 +45,18 @@ except URLError as e:
     streamlit.error()
 
 streamlit.header(" 🍇🍍🍒 The fruit load list contains:")
-# snowflake related function - context manager
-def get_fruit_load_list(cnx):
-    with cnx.cursor() as my_cur:
-        cur.execute("SELECT * from fruit_load_list")
-        return my_cur.fetchall()
+# snowflake related function - context manager of db connection and cursor
+
+def get_fruit_load_list():
+    with snowflake.connector.connect(**streamlit.secrets["snowflake"]) as cnx:
+        with cnx.cursor() as cur:
+            cur.execute("SELECT * from fruit_load_list")
+            fruit_load_list = cur.fetchall()
+    return fruit_load_list
 
 if streamlit.button('Get Fruit Load List'):
-    my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
-    my_data_row = get_fruit_load_list(my_cnx)
+    # my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+    my_data_row = get_fruit_load_list()
     streamlit.dataframe(my_data_row)
 
 # steamlit.stop()
